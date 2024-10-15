@@ -1,4 +1,8 @@
-﻿internal class Program
+﻿using System.Diagnostics;
+using System.Collections.Generic;
+using static Program.Customer;
+
+internal class Program
 {
     private static void Main(string[] args)
     {
@@ -21,7 +25,9 @@
         Product product2 = new Product("bred", 30);
         products.Add(product2);
 
-        var order = new Order<HomeDelivery>(homeDelivery, 1, "Home Delivery products", products);
+        Customer customer = new Customer("Slava Petrov", "938247923");
+
+        var order = new Order<Delivery, object>(homeDelivery, 1, "Доставка на дом", customer, products);
         order.OrderData();
         Console.WriteLine();
     }
@@ -108,18 +114,35 @@
         }
     }
 
-    public class Order<TDelivery> where TDelivery : Delivery
+    public class Customer
+    {
+        public string customerName { get; set; }
+        public string customerPhoneNumber { get; set; }
+        public Customer(string customerName, string customerPhoneNumber)
+        {
+            this.customerName = customerName;
+            this.customerPhoneNumber = customerPhoneNumber;
+        }
+        public override string ToString()
+        {
+            return $"{customerName}, тел.: {customerPhoneNumber}";
+        }
+    }
+
+    public class Order<TDelivery, TStruct> where TDelivery : Delivery
     {
         public TDelivery delivery { get; set; }
         public int number { get; set; }
         public string description { get; set; }
         public List<Product> products { get; set; }
+        public Customer customer { get; set; }
 
-        public Order(TDelivery delivery, int number, string description, List<Product> products)
+        public Order(TDelivery delivery, int number, string description, Customer customer, List<Product> products)
         {
             this.delivery = delivery;
             this.number = number;
             this.description = description;
+            this.customer = customer;
             this.products = products;
         }
 
@@ -130,7 +153,7 @@
 
         public void OrderData()
         {
-            Console.Write($"\n{description} №{number}: ");
+            Console.Write($"\n{description} №{number}, покупатель {customer.ToString()}: ");
             foreach (var product in products)
             {
                 Console.Write($"{product.ToString()}, ");
