@@ -15,6 +15,15 @@
         shopDelivery.DeliveryData();
 
 
+        List<Product> products = new List<Product>();
+        Product product1 = new Product("milk", 100);
+        products.Add(product1);
+        Product product2 = new Product("bred", 30);
+        products.Add(product2);
+
+        var order = new Order<HomeDelivery>(homeDelivery, 1, "Home Delivery products", products);
+        order.OrderData();
+        Console.WriteLine();
     }
 
     public class Address
@@ -83,4 +92,51 @@
         }
     }
 
+    public class Product
+    {
+        public string productName { get; set; }
+        public decimal price { get; set; }
+
+        public Product(string productName, decimal price)
+        {
+            this.productName = productName;
+            this.price = price;
+        }
+        public override string ToString()
+        {
+            return $"{productName}: {price}р.";
+        }
+    }
+
+    public class Order<TDelivery> where TDelivery : Delivery
+    {
+        public TDelivery delivery { get; set; }
+        public int number { get; set; }
+        public string description { get; set; }
+        public List<Product> products { get; set; }
+
+        public Order(TDelivery delivery, int number, string description, List<Product> products)
+        {
+            this.delivery = delivery;
+            this.number = number;
+            this.description = description;
+            this.products = products;
+        }
+
+        public void AddProduct(Product product)
+        {
+            products.Add(product);
+        }
+
+        public void OrderData()
+        {
+            Console.Write($"\n{description} №{number}: ");
+            foreach (var product in products)
+            {
+                Console.Write($"{product.ToString()}, ");
+            }
+        }
+    }
+
 }
+
