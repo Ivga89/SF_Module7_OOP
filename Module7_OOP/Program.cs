@@ -26,8 +26,9 @@ internal class Program
         products.Add(product2);
 
         Customer customer = new Customer("Slava Petrov", "938247923");
+        Seller seller = new Seller("Ozon");
 
-        var order = new Order<Delivery, object>(homeDelivery, 1, "Доставка на дом", customer, products);
+        var order = new Order<Delivery, object>(homeDelivery, 1, seller, "Доставка на дом", customer, products);
         order.OrderData();
         Console.WriteLine();
     }
@@ -129,18 +130,34 @@ internal class Program
         }
     }
 
+    public class Seller
+    {
+        public string sellerName { get; set; }
+        public Seller(string sellerName)
+        {
+            this.sellerName = sellerName;
+        }
+
+        public override string ToString()
+        {
+            return $"продавец: {sellerName}";
+        }
+    }
+
     public class Order<TDelivery, TStruct> where TDelivery : Delivery
     {
         public TDelivery delivery { get; set; }
+        public Seller seller { get; set; }
         public int number { get; set; }
         public string description { get; set; }
         public List<Product> products { get; set; }
         public Customer customer { get; set; }
 
-        public Order(TDelivery delivery, int number, string description, Customer customer, List<Product> products)
+        public Order(TDelivery delivery, int number, Seller seller, string description, Customer customer, List<Product> products)
         {
             this.delivery = delivery;
             this.number = number;
+            this.seller = seller;
             this.description = description;
             this.customer = customer;
             this.products = products;
@@ -153,7 +170,7 @@ internal class Program
 
         public void OrderData()
         {
-            Console.Write($"\n{description} №{number}, покупатель {customer.ToString()}: ");
+            Console.Write($"\n{description} №{number} {seller.ToString()}, покупатель {customer.ToString()}: ");
             foreach (var product in products)
             {
                 Console.Write($"{product.ToString()}, ");
