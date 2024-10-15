@@ -2,9 +2,17 @@
 {
     private static void Main(string[] args)
     {
-        Address address = new Address("Moscow", "Lenina", 10);
-        HomeDelivery homeDelivery = new HomeDelivery(address, "Ivan Ivanich");
-        homeDelivery.DeliveryStatus();
+        Address addressHD = new Address("Moscow", "Lenina", 10);
+        HomeDelivery homeDelivery = new HomeDelivery(addressHD, "Ivan Ivanich");
+        homeDelivery.DeliveryData();
+
+        Address addressPP = new Address("Ekb", "Stroiteley", 13);
+        PickPointDelivery pickPointDelivery = new PickPointDelivery(addressPP);
+        pickPointDelivery.DeliveryData();
+
+        Address addressSD = new Address("Ekb", "Stroiteley", 13);
+        ShopDelivery shopDelivery = new ShopDelivery(addressSD, "Monetka");
+        shopDelivery.DeliveryData();
 
 
     }
@@ -33,7 +41,7 @@
         {
             this.address = address;
         }
-        public abstract void DeliveryStatus();
+        public abstract void DeliveryData();
     }
 
     public class HomeDelivery : Delivery
@@ -43,7 +51,7 @@
         {
             this.courierName = courierName;
         }
-        public override void DeliveryStatus()
+        public override void DeliveryData()
         {
             Console.WriteLine($"Доставка на дом, по адресу: {address.ToString()} курьером {courierName}");
         }
@@ -55,12 +63,24 @@
         {
             base.address = address;
         }
-        public override void DeliveryStatus()
+        public override void DeliveryData()
         {
             Console.WriteLine($"Доставка в пункт выдачи, по адресу: {address.ToString()}");
         }
     }
 
-    
+    public class ShopDelivery : Delivery
+    {
+        public string shopName { get; set; }
+        public ShopDelivery(Address address, string shopName) : base(address)
+        {
+            this.shopName = shopName;
+        }
+
+        public override void DeliveryData()
+        {
+            Console.WriteLine($"Доставка в постамат магазина {shopName}, по адресу: {address.ToString()}");
+        }
+    }
 
 }
